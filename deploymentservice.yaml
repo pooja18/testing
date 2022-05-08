@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    service: mediawiki
+  name: mediawiki
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      service: mediawiki
+  template:
+    metadata:
+      labels:
+        network/wikinetwork: "true"
+        service: mediawiki
+    spec:
+      containers:
+      - image: sldev123/poojarepo:latest
+        imagePullPolicy: Always
+        name: mediawiki
+        ports:
+        - containerPort: 80
+        resources: {}
+      restartPolicy: Always
+      serviceAccountName: ""
+      volumes: null
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    service: mediawiki
+  name: mediawiki
+spec:
+  type: NodePort
+  ports:
+  - name: "8000"
+    port: 8000
+    targetPort: 80
+  selector:
+    service: mediawiki
